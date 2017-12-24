@@ -6,7 +6,7 @@ include "mpif.h"
 real(8), intent(in), dimension(:,:) :: A
 real(8), dimension(size(A(:,1))) :: B
 integer(4), intent(out) :: x1, y1, x2, y2
-integer(4) MatrixHeight, MatrixLength, i, j, k, bottom_border, upper_border, bottom, up
+integer(4) MatrixHeight, MatrixLength, i, j, k, bottomLine, upperLine, bottom, up
 integer(4) mpiErr, mpiSize, mpiRank, ProcwithmaxSumm
 real(8) previousSumm, Summ, maxSumm
 real(8), dimension(:), allocatable :: ALLMaxSums
@@ -29,7 +29,7 @@ do i=(mpiRank+1),MatrixHeight,mpiSize
  do j=i,MatrixHeight
   B=B+A(:,j)
   previousSumm=B(1); bottom=1; up=1
-  Summ=previousSumm; bottom_border=bottom; upper_border=up
+  Summ=previousSumm; bottomLine=bottom; upperLine=up
   do k=2,MatrixLength
    if (B(k)>(B(k)+previousSumm)) then
     bottom=k
@@ -41,14 +41,14 @@ do i=(mpiRank+1),MatrixHeight,mpiSize
    endif
    if (previousSumm>Summ) then
     Summ=previousSumm
-    bottom_border=bottom
-    upper_border=up
+    bottomLine=bottom
+    upperLine=up
    endif
   enddo
   if (Summ>maxSumm) then
    maxSumm=Summ
-   x1=bottom_border
-   x2=upper_border
+   x1=bottomLine
+   x2=upperLine
    y1=i
    y2=j
   endif
